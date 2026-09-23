@@ -1,0 +1,10 @@
+{
+  "name": "frc1983/nfdetran-rs",
+  "description": "Gestao de estoque, vendas e NF-e do Detran-RS",
+  "type": "project",
+  "license": "proprietary",
+  "require": {"php": ">=8.0", "ext-json": "*", "ext-pdo": "*", "ext-pdo_mysql": "*", "yiisoft/yii2": "~2.0.50", "yiisoft/yii2-bootstrap5": "~2.0.0"},
+  "repositories": [{"type": "composer", "url": "https://asset-packagist.org"}],
+  "autoload": {"psr-4": {"app\\": ""}},
+  "config": {"allow-plugins": {"yiisoft/yii2-composer": true}, "sort-packages": true}
+}
