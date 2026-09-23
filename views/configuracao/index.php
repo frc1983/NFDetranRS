@@ -1,28 +1,28 @@
 <?php
+use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var array $sections */
-
+/** @var array $recipient */
 $this->title = 'Configurações';
-$sections = $sections ?? [];
+$configured = !empty($recipient['name']) && !empty($recipient['document']);
 ?>
-<section class="page-head"><div><span class="page-kicker">Administração</span><h1 class="page-title">Configurações</h1><p class="page-subtitle">Prepare integrações, parâmetros fiscais e segurança do ambiente.</p></div></section>
+<section class="page-head"><div><span class="page-kicker">Administração</span><h1 class="page-title">Configurações</h1><p class="page-subtitle">Parâmetros operacionais persistidos no banco local.</p></div></section>
 <section class="content-grid">
-    <article class="card-surface section-card">
-        <header class="section-head"><div><h2>Integrações e emissão</h2><p>Dados sensíveis devem permanecer fora do código-fonte.</p></div></header>
-        <div class="section-body settings-list">
-            <div class="settings-item"><div><h3>Integração GID</h3><p>URL e credenciais fornecidas por configuração segura do ambiente.</p></div><span class="badge-soft warning">Não configurada</span></div>
-            <div class="settings-item"><div><h3>SEFAZ RS</h3><p>Homologação/produção e parâmetros de emissão fiscal.</p></div><span class="badge-soft warning">Não configurada</span></div>
-            <div class="settings-item"><div><h3>Certificado digital</h3><p>Referência a arquivo protegido; o certificado não é salvo no repositório.</p></div><span class="badge-soft warning">Ausente</span></div>
-            <div class="settings-item"><div><h3>Destinatário fixo</h3><p>Razão social, CNPJ e endereço usados nas vendas.</p></div><span class="badge-soft warning">Pendente</span></div>
-        </div>
+    <article class="card-surface form-card">
+        <header class="mb-4"><h2 class="h5">Destinatário fixo</h2><p class="text-muted small">Esses dados serão copiados para todas as novas vendas.</p></header>
+        <?= Html::beginForm(['/configuracao/index'], 'post') ?>
+        <div class="mb-3"><label class="form-label" for="recipient-name">Razão social</label><input class="form-control" id="recipient-name" name="recipient_name" maxlength="190" required value="<?= Html::encode($recipient['name'] ?? '') ?>"></div>
+        <div class="mb-3"><label class="form-label" for="recipient-document">CNPJ</label><input class="form-control" id="recipient-document" name="recipient_document" maxlength="18" inputmode="numeric" required value="<?= Html::encode($recipient['document'] ?? '') ?>"></div>
+        <div class="form-actions"><?= Html::submitButton('Salvar configuração', ['class' => 'btn btn-primary']) ?></div>
+        <?= Html::endForm() ?>
     </article>
     <aside class="card-surface section-card">
-        <header class="section-head"><div><h2>Segurança</h2><p>Princípios aplicados ao ambiente.</p></div></header>
-        <div class="section-body timeline">
-            <div class="timeline-item"><span class="timeline-dot"></span><span class="timeline-copy"><strong>Segredos externos</strong><small>Variáveis de ambiente ou cofre seguro</small></span></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><span class="timeline-copy"><strong>Auditoria imutável</strong><small>Eventos sem edição ou exclusão pela interface</small></span></div>
-            <div class="timeline-item"><span class="timeline-dot"></span><span class="timeline-copy"><strong>Privilégio mínimo</strong><small>Acessos separados por responsabilidade</small></span></div>
+        <header class="section-head"><div><h2>Estado do ambiente</h2><p>Integrações e segurança.</p></div></header>
+        <div class="section-body settings-list">
+            <div class="settings-item"><div><h3>Destinatário fixo</h3><p>Dados persistidos e auditados.</p></div><span class="badge-soft <?= $configured ? '' : 'warning' ?>"><?= $configured ? 'Configurado' : 'Pendente' ?></span></div>
+            <div class="settings-item"><div><h3>Integração GID</h3><p>Cliente ainda opera em modo stub.</p></div><span class="badge-soft warning">Não configurada</span></div>
+            <div class="settings-item"><div><h3>SEFAZ RS</h3><p>Certificado e homologação pendentes.</p></div><span class="badge-soft warning">Não configurada</span></div>
+            <div class="settings-item"><div><h3>Auditoria</h3><p>Eventos protegidos por triggers imutáveis.</p></div><span class="badge-soft">Ativa</span></div>
         </div>
     </aside>
 </section>

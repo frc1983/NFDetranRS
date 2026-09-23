@@ -40,6 +40,16 @@
     });
     document.querySelectorAll('[data-drawer-close]').forEach((element) => element.addEventListener('click', () => toggleDrawer(false)));
 
+    const saleItems = Array.from(document.querySelectorAll('[data-sale-item]'));
+    const saleSummary = document.querySelector('[data-sale-summary]');
+    const updateSaleSummary = () => {
+        if (!saleSummary) return;
+        const count = saleItems.filter((item) => item.checked).length;
+        const invoices = count === 0 ? 0 : Math.ceil(count / 100);
+        saleSummary.value = `${count} ${count === 1 ? 'item' : 'itens'} · ${invoices} NF-e ${invoices === 1 ? 'prevista' : 'previstas'}`;
+    };
+    saleItems.forEach((item) => item.addEventListener('change', updateSaleSummary));
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             toggleSidebar(false);

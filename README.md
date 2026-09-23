@@ -8,8 +8,8 @@ Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-
 
 1. Execute `composer install` na raiz. O Composer resolvera dependencias e criara `composer.lock`; revise e versione esse lock quando disponivel.
 2. Copie `.env.local.example` para `.env.local`, configure o banco e gere uma chave forte para `APP_COOKIE_VALIDATION_KEY` (`php -r "echo bin2hex(random_bytes(32));"`). O arquivo local real nao e versionado.
-3. Execute `php -S 127.0.0.1:8080 -t web` e acesse `http://127.0.0.1:8080`. O modo `APP_DEMO=1` aceita somente GET de localhost; fora desse modo o scaffold bloqueia as rotas.
-4. Para Apache/XAMPP, use VirtualHost com DocumentRoot apontando exclusivamente para `K:/xampp/htdocs/NFDetranRS/web`. Nunca exponha a raiz do projeto, arquivos `.env.*` ou `vendor`.
+3. No XAMPP, acesse `http://localhost/NFDetranRS`. O `.htaccess` encaminha URLs amigaveis ao front controller e serve somente os assets publicos de `web/`.
+4. No primeiro acesso local, cadastre o administrador em `/site/setup`. Depois da criacao do primeiro usuario, essa rota redireciona para o login.
 
 ## Ambientes
 
@@ -18,7 +18,7 @@ Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-
 - `APP_ENV_FILE` pode apontar explicitamente para outro arquivo seguro fora do repositorio.
 - Apenas `.env.local.example` e `.env.production.example` sao versionados. Nunca copie segredos reais de producao para o Git.
 
-Banco nao e necessario para visualizar o modo demonstrativo. Para criar ou atualizar o esquema, siga `database/README.md`.
+Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboard, Estoque, Vendas, NF-e, Auditoria e Configuracoes exige login e permissao RBAC.
 
 ## Validacao
 

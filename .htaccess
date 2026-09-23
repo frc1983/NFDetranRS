@@ -1,2 +1,10 @@
-# Apache 2.4: only the web subdirectory is public.
-Require all denied
+Options -Indexes -MultiViews
+RewriteEngine On
+
+# Public assets remain in web/, while the visible URL stays /NFDetranRS/.
+RewriteRule ^(css|js|assets)/(.*)$ web/$1/$2 [END]
+
+# Every application route is handled by the root front controller.
+# Existing project files are intentionally not exposed by Apache.
+RewriteRule ^index\.php$ - [END]
+RewriteRule ^.*$ index.php [END,QSA]

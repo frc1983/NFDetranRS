@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var string $content */
@@ -37,19 +38,22 @@ $this->registerJsFile('@web/js/app.js', ['depends' => [yii\web\JqueryAsset::clas
                     <span aria-hidden="true">◌</span>
                 </button>
                 <div class="user-chip" aria-label="Usuário atual">
-                    <span class="user-avatar">AD</span>
+                    <span class="user-avatar"><?= Html::encode(mb_strtoupper(mb_substr((string) Yii::$app->user->identity->nome, 0, 2))) ?></span>
                     <span class="d-none d-sm-flex flex-column">
-                        <strong>Administrador</strong>
-                        <small>Perfil demonstrativo</small>
+                        <strong><?= Html::encode(Yii::$app->user->identity->nome) ?></strong>
+                        <small><?= Html::encode(Yii::$app->user->identity->email) ?></small>
                     </span>
                 </div>
+                <?= Html::beginForm(['/site/logout'], 'post', ['class' => 'd-inline']) ?>
+                <?= Html::submitButton('Sair', ['class' => 'btn btn-sm btn-outline-secondary']) ?>
+                <?= Html::endForm() ?>
             </div>
         </header>
         <main class="app-content" id="main-content">
-            <div class="demo-banner" role="status">
-                <strong>Ambiente demonstrativo</strong>
-                <span>Integrações GID e SEFAZ ainda não configuradas.</span>
-            </div>
+            <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+                <div class="alert alert-<?= Html::encode($type) ?>" role="alert"><?= Html::encode($message) ?></div>
+            <?php endforeach; ?>
+            <div class="demo-banner" role="status"><strong>Ambiente local</strong><span>Dados persistidos; integrações GID e SEFAZ ainda não configuradas.</span></div>
             <?= $content ?>
         </main>
         <footer class="app-footer">
