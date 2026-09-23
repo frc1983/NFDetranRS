@@ -17,6 +17,7 @@ Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-
 - `production` carrega `.env.production` quando o servidor define `APP_ENV=production`.
 - `APP_ENV_FILE` pode apontar explicitamente para outro arquivo seguro fora do repositorio.
 - Apenas `.env.local.example` e `.env.production.example` sao versionados. Nunca copie segredos reais de producao para o Git.
+- No ambiente local, o GID-CDV aponta para homologacao; com `APP_ENV=production`, aponta para producao. Consulte `docs/gid-integration.md` para endpoints e pendencias de certificado.
 
 Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboard, Estoque, Vendas, NF-e, Auditoria e Configuracoes exige login e permissao RBAC.
 

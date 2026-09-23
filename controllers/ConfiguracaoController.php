@@ -49,6 +49,10 @@ final class ConfiguracaoController extends BaseController
                 }
             }
         }
-        return $this->render('index', ['recipient' => ['name' => Configuration::value('recipient.name'), 'document' => Configuration::value('recipient.document')]]);
+        return $this->render('index', [
+            'recipient' => ['name' => Configuration::value('recipient.name'), 'document' => Configuration::value('recipient.document')],
+            'company' => Yii::$app->params['company'],
+            'gid' => Yii::$app->params['gid'],
+        ]);
     }
 }

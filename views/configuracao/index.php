@@ -3,8 +3,12 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 /** @var array $recipient */
+/** @var array $company */
+/** @var array $gid */
 $this->title = 'Configurações';
 $configured = !empty($recipient['name']) && !empty($recipient['document']);
+$gidCertificateConfigured = !empty($gid['certificatePath']) && is_file($gid['certificatePath']);
+$gidEnvironmentLabel = $gid['environment'] === 'production' ? 'Produção' : 'Homologação';
 ?>
 <section class="page-head"><div><span class="page-kicker">Administração</span><h1 class="page-title">Configurações</h1><p class="page-subtitle">Parâmetros operacionais persistidos no banco local.</p></div></section>
 <section class="content-grid">
@@ -17,10 +21,19 @@ $configured = !empty($recipient['name']) && !empty($recipient['document']);
         <?= Html::endForm() ?>
     </article>
     <aside class="card-surface section-card">
+        <header class="section-head"><div><h2>Empresa emitente</h2><p>Cadastro utilizado na integração com o GID-CDV.</p></div></header>
+        <div class="section-body settings-list">
+            <div class="settings-item"><div><h3><?= Html::encode($company['tradeName']) ?></h3><p><?= Html::encode($company['legalName']) ?></p></div><span class="badge-soft">Ativa</span></div>
+            <div class="settings-item"><div><h3>Código CDV</h3><p><?= Html::encode($company['cdvCode']) ?></p></div></div>
+            <div class="settings-item"><div><h3>CNPJ</h3><p><?= Html::encode($company['cnpj']) ?></p></div></div>
+            <div class="settings-item"><div><h3>Endereço</h3><p><?= Html::encode($company['address']) ?></p></div></div>
+        </div>
+    </aside>
+    <aside class="card-surface section-card">
         <header class="section-head"><div><h2>Estado do ambiente</h2><p>Integrações e segurança.</p></div></header>
         <div class="section-body settings-list">
             <div class="settings-item"><div><h3>Destinatário fixo</h3><p>Dados persistidos e auditados.</p></div><span class="badge-soft <?= $configured ? '' : 'warning' ?>"><?= $configured ? 'Configurado' : 'Pendente' ?></span></div>
-            <div class="settings-item"><div><h3>Integração GID</h3><p>Cliente ainda opera em modo stub.</p></div><span class="badge-soft warning">Não configurada</span></div>
+            <div class="settings-item"><div><h3>GID <?= Html::encode($gidEnvironmentLabel) ?></h3><p><?= Html::encode($gid['serviceUrl']) ?></p></div><span class="badge-soft <?= $gidCertificateConfigured ? '' : 'warning' ?>"><?= $gidCertificateConfigured ? 'Certificado disponível' : 'Aguardando certificado' ?></span></div>
             <div class="settings-item"><div><h3>SEFAZ RS</h3><p>Certificado e homologação pendentes.</p></div><span class="badge-soft warning">Não configurada</span></div>
             <div class="settings-item"><div><h3>Auditoria</h3><p>Eventos protegidos por triggers imutáveis.</p></div><span class="badge-soft">Ativa</span></div>
         </div>
