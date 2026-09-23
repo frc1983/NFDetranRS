@@ -71,7 +71,7 @@ final class m260923_000001_create_core_schema extends Migration
         $this->addForeignKey('fk_ni_vi', '{{%nfe_item}}', 'venda_item_id', '{{%venda_item}}', 'id', 'RESTRICT', 'RESTRICT');
         $this->createIndex('uq_ni_item', '{{%nfe_item}}', 'venda_item_id', true);
         $this->createIndex('uq_ni_ordem', '{{%nfe_item}}', ['nfe_id', 'ordem'], true);
-        $this->addCheckConstraint('ck_ni_ordem', '{{%nfe_item}}', '[[ordem]] BETWEEN 1 AND 100');
+        $this->execute('ALTER TABLE {{%nfe_item}} ADD CONSTRAINT [[ck_ni_ordem]] CHECK ([[ordem]] BETWEEN 1 AND 100)');
         $this->createTable('{{%integracao_log}}', [
             'id' => $this->bigPrimaryKey()->unsigned(), 'integracao' => "ENUM('gid','sefaz') NOT NULL", 'operacao' => $this->string(100)->notNull(),
             'status' => "ENUM('iniciada','sucesso','erro','retry') NOT NULL", 'idempotency_key' => $this->string(100)->notNull(),

@@ -7,11 +7,18 @@ Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-
 ## Preparar localmente
 
 1. Execute `composer install` na raiz. O Composer resolvera dependencias e criara `composer.lock`; revise e versione esse lock quando disponivel.
-2. Copie `.env.example` para `.env`, configure banco e gere uma chave forte para `APP_COOKIE_VALIDATION_KEY` (`php -r "echo bin2hex(random_bytes(32));"`).
+2. Copie `.env.local.example` para `.env.local`, configure o banco e gere uma chave forte para `APP_COOKIE_VALIDATION_KEY` (`php -r "echo bin2hex(random_bytes(32));"`). O arquivo local real nao e versionado.
 3. Execute `php -S 127.0.0.1:8080 -t web` e acesse `http://127.0.0.1:8080`. O modo `APP_DEMO=1` aceita somente GET de localhost; fora desse modo o scaffold bloqueia as rotas.
-4. Para Apache/XAMPP, use VirtualHost com DocumentRoot apontando exclusivamente para `K:/xampp/htdocs/NFDetranRS/web`. Nunca exponha a raiz do projeto, `.env` ou `vendor`.
+4. Para Apache/XAMPP, use VirtualHost com DocumentRoot apontando exclusivamente para `K:/xampp/htdocs/NFDetranRS/web`. Nunca exponha a raiz do projeto, arquivos `.env.*` ou `vendor`.
 
-Banco nao e necessario para visualizar o modo demonstrativo. Para criar o esquema posteriormente, siga `database/README.md`. Nenhuma migration foi executada nesta entrega.
+## Ambientes
+
+- `local` e o padrao e carrega `.env.local`.
+- `production` carrega `.env.production` quando o servidor define `APP_ENV=production`.
+- `APP_ENV_FILE` pode apontar explicitamente para outro arquivo seguro fora do repositorio.
+- Apenas `.env.local.example` e `.env.production.example` sao versionados. Nunca copie segredos reais de producao para o Git.
+
+Banco nao e necessario para visualizar o modo demonstrativo. Para criar ou atualizar o esquema, siga `database/README.md`.
 
 ## Validacao
 

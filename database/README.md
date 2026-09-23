@@ -1,8 +1,8 @@
 # Banco de dados
 
-Migrations preparadas para MySQL 8.0.16+ (CHECK efetivo), nao executadas. XAMPP pode distribuir MariaDB: valide o esquema em banco descartavel nessa versao antes de usar dados reais.
+Migrations preparadas para MySQL 8.0.16+ e validadas localmente no MariaDB distribuido pelo XAMPP. Antes de producao, valide novamente na versao exata do servidor de destino.
 
-Depois de criar o banco vazio `nfdetranrs`, configurar `.env` e instalar dependencias:
+O ambiente local usa o banco `nfdetranrs` e o arquivo `.env.local`. Depois de instalar as dependencias:
 
 ```sh
 php yii migrate --migrationPath=@app/database/migrations
