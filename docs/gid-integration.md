@@ -69,12 +69,12 @@ Nunca versionar `.pfx`, `.p12`, `.pem`, `.key` ou a senha do certificado.
 
 1. Obter o certificado digital e a senha para a homologação.
 2. Solicitar/liberar o acesso ao host de homologação na PROCERGS.
-3. Confirmar o cabeçalho SOAP, assinatura XML e versão atual do manual.
-4. Implementar o cliente SOAP real; o componente atual ainda é um stub seguro.
-5. Mapear o retorno do GID para `estoque_gid` sem permitir alterações manuais no estoque de origem.
-6. Implementar paginação por `ULTIMO_ITEM_PESQUISADO`, com até 50 itens por resposta conforme o manual 1.4.
-7. Registrar cada chamada em `integracao_log`, sem armazenar certificado, senha ou payload sensível.
-8. Homologar consulta, reserva, confirmação, cancelamento e contingência antes de habilitar produção.
+3. Confirmar com a PROCERGS o cabeçalho SOAP, o algoritmo de assinatura e a versão atual do manual.
+4. Executar `yii gid/doctor` para validar o A1, CNPJ, validade, chave privada e WSDL.
+5. Executar a primeira sincronização no ambiente de homologação e conferir o mapeamento das peças.
+6. Homologar reserva, confirmação, cancelamento e contingência antes de habilitar produção.
+
+O cliente SOAP, a assinatura XML, o mapeamento para `estoque_gid`, a paginação por `ULTIMO_ITEM_PESQUISADO`, a transação e os logs já estão implementados. Sem certificado, o cliente encerra com erro de configuração antes de enviar qualquer mensagem ao GID.
 
 ## Comandos preparados
 
