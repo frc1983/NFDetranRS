@@ -48,5 +48,10 @@ return [
         'certificatePassword' => $environmentValue('GID_CERT_PASSWORD'),
         'connectionTimeout' => max(1, (int) $environmentValue('GID_CONNECTION_TIMEOUT', '30')),
         'verifyPeer' => filter_var($environmentValue('GID_VERIFY_PEER', '1'), FILTER_VALIDATE_BOOL),
+        'layoutVersion' => $environmentValue('GID_LAYOUT_VERSION', '1'),
+        'operatorRegistration' => $environmentValue('GID_OPERATOR_REGISTRATION', ''),
+        'homologationOperation' => $environmentValue('GID_HOMOLOGATION_OPERATION', ''),
+        'issuerName' => $environmentValue('GID_ISSUER_NAME', 'NFDETRANRS'),
+        'issuerCnpj' => preg_replace('/\D+/', '', $environmentValue('GID_ISSUER_CNPJ', '05034500000168')),
     ],
 ];

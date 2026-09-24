@@ -25,6 +25,8 @@ Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboa
 
 `php tests/domain_test.php` testa os lotes 0/1/100/101/201, conservacao de itens, limites invalidos, transicoes e destinatario fixo. `composer validate --no-check-publish` verifica o manifesto. Dependencias e aplicacao HTTP precisam ser validadas apos `composer install`.
 
+`php tests/gid_config_test.php` valida a selecao de HOM/PROD. `php tests/gid_signature_test.php` valida a leitura PKCS#12 e a assinatura XML Digital Signature. Com o certificado configurado, use `php yii gid/doctor` antes de `php yii gid/sync`.
+
 ## Regras preparadas
 
 - Destinatario fixo obtido da configuracao (documento/nome), sem entrada livre na venda.

@@ -19,6 +19,8 @@ O emitente é configurado por variáveis de ambiente. O destinatário da venda c
 
 O alias de produção foi verificado e redireciona para o WSDL HTTPS indicado. O alias de homologação redireciona para a rede `intra.rs.gov.br`; o acesso pode depender de túnel/VPN ou liberação da PROCERGS.
 
+Apesar do nome legado `integracaonfe`, este é o serviço SOAP do GID-CDV para estoque e fluxo de venda. A autorização fiscal da NF-e na SEFAZ é uma integração separada.
+
 O manual de integração versão 1.4 está indexado em:
 
 - https://ptdocz.com/doc/420248/manual-de-integra%C3%A7%C3%A3o-do-sistema-gid-desmanches-e
@@ -73,3 +75,19 @@ Nunca versionar `.pfx`, `.p12`, `.pem`, `.key` ou a senha do certificado.
 6. Implementar paginação por `ULTIMO_ITEM_PESQUISADO`, com até 50 itens por resposta conforme o manual 1.4.
 7. Registrar cada chamada em `integracao_log`, sem armazenar certificado, senha ou payload sensível.
 8. Homologar consulta, reserva, confirmação, cancelamento e contingência antes de habilitar produção.
+
+## Comandos preparados
+
+Depois de configurar `GID_CERT_PATH` e `GID_CERT_PASSWORD`, valide o arquivo sem chamar o serviço:
+
+```powershell
+K:\xampp\php\php.exe yii gid/doctor
+```
+
+Após a liberação da homologação, sincronize o estoque:
+
+```powershell
+K:\xampp\php\php.exe yii gid/sync
+```
+
+O sincronizador consulta o catálogo de nomes de peças e pesquisa cada nome de forma exata, paginando os resultados em blocos de até 50 itens. A operação é transacional: em caso de falha, o estoque local não fica parcialmente atualizado. O botão **Sincronizar GID** executa o mesmo fluxo para administradores.

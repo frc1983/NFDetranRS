@@ -7,10 +7,15 @@ use yii\helpers\Html;
 
 $this->title = 'Estoque GID';
 $items = $items ?? [];
+$gidCertificateConfigured = !empty(Yii::$app->params['gid']['certificatePath']) && is_file(Yii::$app->params['gid']['certificatePath']);
 ?>
 <section class="page-head">
     <div><span class="page-kicker">Integração GID</span><h1 class="page-title">Estoque</h1><p class="page-subtitle">Consulte e selecione itens disponíveis para comercialização.</p></div>
-    <button class="btn btn-primary" type="button" disabled title="Disponível após configurar o GID">Sincronizar GID</button>
+    <?php if (Yii::$app->user->can('estoque.sincronizar')): ?>
+        <?= Html::beginForm(['/estoque/sync'], 'post', ['class' => 'd-inline']) ?>
+        <?= Html::submitButton('Sincronizar GID', ['class' => 'btn btn-primary', 'data' => ['confirm' => 'Sincronizar agora o estoque da Oficina da Moto com o GID?']]) ?>
+        <?= Html::endForm() ?>
+    <?php endif; ?>
 </section>
 
 <form class="card-surface filter-bar" method="get" role="search">
@@ -21,12 +26,12 @@ $items = $items ?? [];
 </form>
 
 <section class="card-surface section-card">
-    <header class="section-head"><div><h2>Itens sincronizados</h2><p><?= count($items) ?> item(ns) encontrado(s)</p></div><span class="badge-soft warning">Integração pendente</span></header>
+    <header class="section-head"><div><h2>Itens sincronizados</h2><p><?= count($items) ?> item(ns) encontrado(s)</p></div><span class="badge-soft <?= $gidCertificateConfigured ? '' : 'warning' ?>"><?= $gidCertificateConfigured ? 'GID configurado' : 'Aguardando certificado' ?></span></header>
     <?php if (!$items): ?>
         <div class="empty-state"><div class="empty-icon">◇</div><h3>Estoque ainda não sincronizado</h3><p>Configure as credenciais do GID para importar os itens. Nenhum dado demonstrativo será confundido com estoque real.</p></div>
     <?php else: ?>
-        <div class="table-responsive"><table class="table"><thead><tr><th>Código</th><th>Descrição</th><th>Identificador</th><th>Situação</th><th>Atualizado em</th></tr></thead><tbody>
-        <?php foreach ($items as $item): ?><tr><td><strong><?= Html::encode($item->codigo) ?></strong></td><td><?= Html::encode($item->descricao) ?></td><td><?= Html::encode($item->gid_id) ?></td><td><span class="badge-soft <?= (float) $item->quantidade_disponivel > 0 ? '' : 'warning' ?>"><?= (float) $item->quantidade_disponivel > 0 ? 'Disponível' : 'Indisponível' ?></span></td><td><?= Html::encode($item->updated_at) ?></td></tr><?php endforeach; ?>
+        <div class="table-responsive"><table class="table"><thead><tr><th>Código</th><th>Peça</th><th>Veículo</th><th>Placa</th><th>Situação</th><th>Sincronizado em</th></tr></thead><tbody>
+        <?php foreach ($items as $item): ?><tr><td><strong><?= Html::encode($item->gid_id) ?></strong></td><td><?= Html::encode($item->descricao) ?></td><td><?= Html::encode(trim((string) $item->marca . ' ' . (string) $item->modelo . ' ' . (string) $item->ano_modelo)) ?></td><td><?= Html::encode($item->placa_veiculo ?: '—') ?></td><td><span class="badge-soft <?= (float) $item->quantidade_disponivel > 0 ? '' : 'warning' ?>"><?= (float) $item->quantidade_disponivel > 0 ? 'Disponível' : 'Indisponível' ?></span></td><td><?= Html::encode($item->sincronizado_em) ?></td></tr><?php endforeach; ?>
         </tbody></table></div>
     <?php endif; ?>
 </section>

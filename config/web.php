@@ -25,7 +25,11 @@ return [
         'authManager' => ['class' => yii\rbac\DbManager::class],
         'log' => ['traceLevel' => 0, 'targets' => [['class' => yii\log\FileTarget::class, 'levels' => ['error', 'warning'], 'logVars' => []]]],
         'urlManager' => ['enablePrettyUrl' => true, 'showScriptName' => false],
-        'gidClient' => ['class' => app\services\integration\StubGidClient::class],
+        'gidClient' => [
+            'class' => app\services\integration\GidSoapClient::class,
+            'configuration' => require __DIR__ . '/gid.php',
+            'company' => (require __DIR__ . '/params.php')['company'],
+        ],
         'sefazClient' => ['class' => app\services\integration\StubSefazClient::class],
     ],
     'params' => require __DIR__ . '/params.php',
