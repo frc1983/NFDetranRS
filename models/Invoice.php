@@ -9,4 +9,5 @@ final class Invoice extends ActiveRecord
 {
     public static function tableName(): string { return '{{%nfe}}'; }
     public function getSale(): ActiveQuery { return $this->hasOne(Sale::class, ['id' => 'venda_id']); }
+    public function getItems(): ActiveQuery { return $this->hasMany(InvoiceItem::class, ['nfe_id' => 'id']); }
 }

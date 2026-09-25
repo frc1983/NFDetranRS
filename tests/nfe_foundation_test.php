@@ -7,6 +7,8 @@ require dirname(__DIR__) . '/vendor/yiisoft/yii2/Yii.php';
 use app\services\fiscal\NfeAccessKey;
 use app\services\fiscal\NfeConfigurationValidator;
 use app\services\fiscal\NfeDraftValidator;
+use app\services\fiscal\NfeXmlBuilder;
+use app\services\fiscal\NfeArtifactStorage;
 use app\services\integration\MockSefazClient;
 use NFePHP\Common\Keys;
 
@@ -30,8 +32,13 @@ $assert((new NfeConfigurationValidator())->errors($configuration, false) === [],
 
 $invoice = [
     'stateCode' => 43, 'issuedAt' => '2026-09-25T10:00:00-03:00', 'series' => 1, 'number' => 1,
+    'numericCode' => '12345678',
     'issuer' => $configuration['issuer'],
-    'recipient' => ['document' => '00000000191', 'name' => 'CONSUMIDOR DE HOMOLOGACAO'],
+    'recipient' => [
+        'document' => '00000000191', 'name' => 'CONSUMIDOR DE HOMOLOGACAO',
+        'street' => 'RUA DE TESTE', 'number' => '100', 'district' => 'CENTRO',
+        'cityCode' => 4314902, 'city' => 'PORTO ALEGRE', 'state' => 'RS', 'postalCode' => '90000000',
+    ],
     'items' => [[
         'code' => 'GID-1', 'description' => 'PECA USADA PARA TESTE', 'ncm' => '87089990',
         'cfop' => '5102', 'unit' => 'UN', 'quantity' => 1, 'unitPrice' => 100.00, 'total' => 100.00,
@@ -51,6 +58,23 @@ $result = (new MockSefazClient(['configuration' => $configuration]))->authorize(
 );
 $assert($result->success && ($result->payload['simulated'] ?? false) === true, 'Simulador deveria autorizar como documento sem valor fiscal.');
 $assert(Keys::isValid((string) $result->payload['accessKey']), 'Simulador deve retornar chave valida.');
+
+$built = (new NfeXmlBuilder($configuration))->build($invoice);
+$assert(Keys::isValid($built['accessKey']), 'XML deve conter chave valida.');
+$assert(hash('sha256', $built['xml']) === $built['hash'], 'Hash do XML deve ser reproduzivel.');
+$assert(str_contains($built['xml'], 'SEM VALOR FISCAL'), 'XML simulado deve possuir aviso explicito.');
+$artifactDirectory = sys_get_temp_dir() . '/nfdetranrs-nfe-artifacts-' . bin2hex(random_bytes(4));
+$paths = (new NfeArtifactStorage($artifactDirectory))->store($built['xml'], $built['accessKey'], new DateTimeImmutable($invoice['issuedAt']));
+try {
+    $assert(is_file($paths['xml']) && filesize($paths['xml']) > 0, 'XML deve ser armazenado.');
+    $assert(is_file($paths['pdf']) && filesize($paths['pdf']) > 1000, 'DANFE deve ser gerado em PDF.');
+} finally {
+    @unlink($paths['xml']);
+    @unlink($paths['pdf']);
+    @rmdir(dirname($paths['xml']));
+    @rmdir(dirname(dirname($paths['xml'])));
+    @rmdir($artifactDirectory);
+}
 
 try {
     $invalid = $invoice;

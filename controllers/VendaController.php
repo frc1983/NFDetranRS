@@ -30,13 +30,21 @@ final class VendaController extends BaseController
 
     public function actionCreate(): \yii\web\Response|string
     {
-        $recipient = ['name' => Configuration::value('recipient.name'), 'document' => Configuration::value('recipient.document')];
+        $recipient = [
+            'name' => Configuration::value('recipient.name'), 'document' => Configuration::value('recipient.document'),
+            'state_registration' => Configuration::value('recipient.state_registration'),
+            'street' => Configuration::value('recipient.street'), 'number' => Configuration::value('recipient.number'),
+            'complement' => Configuration::value('recipient.complement'), 'district' => Configuration::value('recipient.district'),
+            'city_code' => Configuration::value('recipient.city_code'), 'city' => Configuration::value('recipient.city'),
+            'state' => Configuration::value('recipient.state'), 'postal_code' => Configuration::value('recipient.postal_code'),
+            'email' => Configuration::value('recipient.email'), 'phone' => Configuration::value('recipient.phone'),
+        ];
         $items = StockItem::find()->where(['>', 'quantidade_disponivel', 0])->orderBy(['descricao' => SORT_ASC])->limit(200)->all();
 
         if (Yii::$app->request->isPost) {
             $ids = array_values(array_unique(array_filter(array_map('intval', (array) Yii::$app->request->post('items', [])))));
-            if (!$recipient['name'] || !$recipient['document']) {
-                Yii::$app->session->setFlash('danger', 'Configure o destinatario fixo antes de criar uma venda.');
+            if (!$recipient['name'] || !$recipient['document'] || !$recipient['street'] || !$recipient['city_code']) {
+                Yii::$app->session->setFlash('danger', 'Configure o destinatario fiscal completo antes de criar uma venda.');
             } elseif (!$ids) {
                 Yii::$app->session->setFlash('danger', 'Selecione pelo menos um item disponivel.');
             } else {
@@ -53,6 +61,17 @@ final class VendaController extends BaseController
                             'status' => 'rascunho',
                             'destinatario_documento' => $recipient['document'],
                             'destinatario_nome' => $recipient['name'],
+                            'destinatario_ie' => $recipient['state_registration'],
+                            'destinatario_logradouro' => $recipient['street'],
+                            'destinatario_numero' => $recipient['number'],
+                            'destinatario_complemento' => $recipient['complement'],
+                            'destinatario_bairro' => $recipient['district'],
+                            'destinatario_municipio_codigo' => $recipient['city_code'],
+                            'destinatario_municipio' => $recipient['city'],
+                            'destinatario_uf' => $recipient['state'],
+                            'destinatario_cep' => $recipient['postal_code'],
+                            'destinatario_email' => $recipient['email'],
+                            'destinatario_telefone' => $recipient['phone'],
                             'valor_total' => number_format($totalCents / 100, 2, '.', ''),
                             'idempotency_key' => Yii::$app->security->generateRandomString(64),
                             'correlation_id' => $correlationId,

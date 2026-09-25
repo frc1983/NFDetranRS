@@ -2,7 +2,7 @@
 
 PHP 8.0+, Yii2, Bootstrap 5 e MySQL. Modulos: Dashboard, Estoque GID, Nova venda, Vendas, NF-e, Auditoria e Configuracoes.
 
-Esta entrega ainda nao emite documentos fiscais reais. Autenticacao, RBAC, persistencia de vendas e sincronizacao inicial do estoque GID estao preparados. A NF-e possui configuracao HOM/PROD, base de dados fiscal, chave de acesso, validadores e simulador local; XML completo, assinatura, DANFE e transmissao SEFAZ continuam pendentes. Nao implantar em producao.
+Esta entrega ainda nao emite documentos fiscais reais. Autenticacao, RBAC, persistencia de vendas e sincronizacao inicial do estoque GID estao preparados. A NF-e local gera XML assinado por certificado efemero, valida XSD, persiste e cria DANFE marcado como simulacao; a transmissao SEFAZ continua bloqueada e pendente. Nao implantar em producao.
 
 ## Preparar localmente
 
@@ -28,7 +28,7 @@ Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboa
 
 `php tests/gid_config_test.php` valida a selecao de HOM/PROD. `php tests/gid_signature_test.php` valida a leitura PKCS#12 e a assinatura XML Digital Signature. Com o certificado configurado, use `php yii gid/doctor` antes de `php yii gid/sync`.
 
-`php tests/nfe_foundation_test.php` valida a configuracao fiscal, os rascunhos, a chave de acesso e o simulador SEFAZ local.
+`php tests/nfe_foundation_test.php` valida configuracao, rascunhos, chave, XML, XSD e DANFE. `php tests/nfe_simulation_test.php` valida o fluxo transacional completo a partir de uma venda.
 
 ## Regras preparadas
 

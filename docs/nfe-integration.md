@@ -30,12 +30,18 @@ Implementado nesta primeira etapa:
 - numeração independente por ambiente/modelo/série;
 - comando de diagnóstico `php yii nfe/doctor`;
 - migration `m260925_000004_prepare_nfe_emission` aplicada no banco local.
+- geração do XML NF-e 4.00 pelo NFePHP;
+- assinatura do XML com certificado efêmero exclusivo do simulador;
+- validação XSD antes da persistência;
+- DANFE em PDF com aviso de simulação/sem valor fiscal;
+- armazenamento protegido em `runtime/nfe` e download autenticado;
+- numeração transacional, divisão em lotes de até 100 itens e idempotência por venda/lote;
+- tela para classificação fiscal de cada peça;
+- snapshots de endereço do destinatário nas novas vendas.
 
 Ainda não implementado:
 
-- geração completa e assinatura do XML;
 - transmissão mTLS e tratamento dos retornos da SEFAZ;
-- DANFE;
 - eventos reais de cancelamento e inutilização;
 - worker de emissão e retentativas;
 - vínculo transacional entre autorização SEFAZ e confirmação/baixa no GID;
@@ -64,3 +70,14 @@ K:\xampp\php\php.exe tests/nfe_foundation_test.php
 ```
 
 Resultados do simulador não são documentos fiscais, não podem ser entregues ao comprador e não devem provocar baixa real no GID.
+
+## Fluxo local
+
+1. Preencha IE e CRT no `.env.local`.
+2. Complete o endereço do destinatário em **Configurações**.
+3. Classifique cada peça na tela **Estoque GID** com os códigos confirmados pelo contador.
+4. Crie uma nova venda para que o endereço fiscal seja copiado como snapshot.
+5. Em **Vendas**, escolha **Gerar simulação**.
+6. Baixe XML e DANFE na tela **NF-e**.
+
+O fluxo não muda o estado operacional da venda, não confirma venda no GID e não abre conexão com a SEFAZ.

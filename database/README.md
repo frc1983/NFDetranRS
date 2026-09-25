@@ -19,3 +19,5 @@ Triggers bloqueiam UPDATE/DELETE diretos em auditoria e logs. A conta de execuca
 O limite de NF-e e aplicado no dominio (ate 100) e no esquema (ordem unica entre 1 e 100). Cada item de venda so pode integrar uma NF-e nesta estrutura inicial. Idempotencia, correlation_id e tentativas estao previstos no schema/interfaces; o worker transacional e a politica de repeticao ainda devem ser implementados.
 
 A migration `m260925_000004_prepare_nfe_emission` adiciona classificacao fiscal ao estoque, metadados da NF-e e controle independente de numeracao por ambiente/modelo/serie. Numeracao fiscal nao deve ser reiniciada nem compartilhada entre homologacao e producao.
+
+A migration `m260925_000005_expand_nfe_recipient_and_artifacts` adiciona o snapshot do endereco fiscal do destinatario e o caminho protegido do DANFE. Vendas antigas sem o snapshot devem ser recriadas para simulacao fiscal.

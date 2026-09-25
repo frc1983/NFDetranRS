@@ -12,6 +12,7 @@
     "ext-pdo": "*",
     "ext-pdo_mysql": "*",
     "ext-soap": "*",
+    "nfephp-org/sped-da": "^1.1",
     "nfephp-org/sped-nfe": "^5.1",
     "yiisoft/yii2": "~2.0.50",
     "yiisoft/yii2-bootstrap5": "~2.0.0"
