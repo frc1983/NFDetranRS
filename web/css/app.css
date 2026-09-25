@@ -52,8 +52,6 @@ a { color: inherit; }
 .user-chip small { color: var(--ink-500); }
 .user-avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: #fff; background: var(--brand-600); font-weight: 700; }
 .btn-icon { width: 40px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 10px; display: inline-grid; place-items: center; background: #fff; color: var(--ink-700); }
-.notification-button { position: relative; font-size: 1.3rem; }
-.notification-dot { position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border: 2px solid #fff; border-radius: 50%; background: var(--danger); }
 .app-content { width: 100%; max-width: 1600px; margin: 0 auto; padding: 32px 34px 48px; flex: 1; }
 .demo-banner { display: flex; align-items: center; gap: 9px; margin-bottom: 20px; padding: 10px 13px; border: 1px solid #f1d697; border-radius: 10px; color: #76500a; background: #fff8e8; font-size: .75rem; }
 .demo-banner strong { font-size: .73rem; }

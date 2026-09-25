@@ -33,10 +33,6 @@ $this->registerJsFile('@web/js/app.js', ['depends' => [yii\web\JqueryAsset::clas
                 <strong>Notas Detran RS</strong>
             </div>
             <div class="topbar-actions">
-                <button class="btn btn-icon notification-button" type="button" aria-label="Notificações">
-                    <span class="notification-dot" aria-hidden="true"></span>
-                    <span aria-hidden="true">◌</span>
-                </button>
                 <div class="user-chip" aria-label="Usuário atual">
                     <span class="user-avatar"><?= Html::encode(mb_strtoupper(mb_substr((string) Yii::$app->user->identity->nome, 0, 2))) ?></span>
                     <span class="d-none d-sm-flex flex-column">
