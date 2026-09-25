@@ -17,3 +17,5 @@ Credenciais/certificados GID e SEFAZ nunca entram no Git. `configuracao.valor_ci
 Triggers bloqueiam UPDATE/DELETE diretos em auditoria e logs. A conta de execucao deve ter privilegios minimos e nao pode possuir ALTER, DROP, TRIGGER ou TRUNCATE. DBA ainda pode remover protecoes; exportacao assinada/WORM e uma etapa futura. A FK da auditoria usa RESTRICT para que exclusao de usuario nao altere historico via cascata.
 
 O limite de NF-e e aplicado no dominio (ate 100) e no esquema (ordem unica entre 1 e 100). Cada item de venda so pode integrar uma NF-e nesta estrutura inicial. Idempotencia, correlation_id e tentativas estao previstos no schema/interfaces; o worker transacional e a politica de repeticao ainda devem ser implementados.
+
+A migration `m260925_000004_prepare_nfe_emission` adiciona classificacao fiscal ao estoque, metadados da NF-e e controle independente de numeracao por ambiente/modelo/serie. Numeracao fiscal nao deve ser reiniciada nem compartilhada entre homologacao e producao.

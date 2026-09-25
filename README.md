@@ -2,7 +2,7 @@
 
 PHP 8.0+, Yii2, Bootstrap 5 e MySQL. Modulos: Dashboard, Estoque GID, Nova venda, Vendas, NF-e, Auditoria e Configuracoes.
 
-Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-e, transicoes de estado, interfaces de integracao e migrations. Nao emite documentos fiscais nem persiste vendas. Autenticacao, aplicacao de RBAC, workers/retries, escrita da auditoria e conectores GID/SEFAZ ainda devem ser implementados. Nao implantar em producao.
+Esta entrega ainda nao emite documentos fiscais reais. Autenticacao, RBAC, persistencia de vendas e sincronizacao inicial do estoque GID estao preparados. A NF-e possui configuracao HOM/PROD, base de dados fiscal, chave de acesso, validadores e simulador local; XML completo, assinatura, DANFE e transmissao SEFAZ continuam pendentes. Nao implantar em producao.
 
 ## Preparar localmente
 
@@ -18,6 +18,7 @@ Esta entrega e uma base inicial: telas demonstrativas, dominio de divisao de NF-
 - `APP_ENV_FILE` pode apontar explicitamente para outro arquivo seguro fora do repositorio.
 - Apenas `.env.local.example` e `.env.production.example` sao versionados. Nunca copie segredos reais de producao para o Git.
 - No ambiente local, o GID-CDV aponta para homologacao; com `APP_ENV=production`, aponta para producao. Consulte `docs/gid-integration.md` para endpoints e pendencias de certificado.
+- A NF-e usa simulador somente no ambiente local e bloqueia dados fiscais incompletos. Consulte `docs/nfe-integration.md` e execute `php yii nfe/doctor`.
 
 Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboard, Estoque, Vendas, NF-e, Auditoria e Configuracoes exige login e permissao RBAC.
 
@@ -26,6 +27,8 @@ Para criar ou atualizar o esquema, siga `database/README.md`. O acesso a Dashboa
 `php tests/domain_test.php` testa os lotes 0/1/100/101/201, conservacao de itens, limites invalidos, transicoes e destinatario fixo. `composer validate --no-check-publish` verifica o manifesto. Dependencias e aplicacao HTTP precisam ser validadas apos `composer install`.
 
 `php tests/gid_config_test.php` valida a selecao de HOM/PROD. `php tests/gid_signature_test.php` valida a leitura PKCS#12 e a assinatura XML Digital Signature. Com o certificado configurado, use `php yii gid/doctor` antes de `php yii gid/sync`.
+
+`php tests/nfe_foundation_test.php` valida a configuracao fiscal, os rascunhos, a chave de acesso e o simulador SEFAZ local.
 
 ## Regras preparadas
 

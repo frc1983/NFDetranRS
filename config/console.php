@@ -14,6 +14,12 @@ return [
             'configuration' => $params['gid'],
             'company' => $params['company'],
         ],
+        'sefazClient' => [
+            'class' => $params['nfe']['transport'] === 'mock'
+                ? app\services\integration\MockSefazClient::class
+                : app\services\integration\StubSefazClient::class,
+            'configuration' => $params['nfe'],
+        ],
     ],
     'params' => $params,
 ];

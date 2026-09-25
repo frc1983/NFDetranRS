@@ -26,6 +26,22 @@ $gidDefaults = $gidEnvironment === 'production'
         'serviceUrl' => 'https://secweb.hml.intra.rs.gov.br/cdv/IntegracaoGidSoap',
     ];
 
+$nfeEnvironment = $environmentValue('NFE_ENVIRONMENT', $isProduction ? 'production' : 'homologation');
+if (!in_array($nfeEnvironment, ['homologation', 'production'], true)) {
+    throw new RuntimeException('NFE_ENVIRONMENT deve ser homologation ou production.');
+}
+$nfeIsProduction = $nfeEnvironment === 'production';
+$nfeBaseUrl = $nfeIsProduction
+    ? 'https://nfe.sefazrs.rs.gov.br/ws'
+    : 'https://nfe-homologacao.sefazrs.rs.gov.br/ws';
+$nfeTransport = $environmentValue('NFE_TRANSPORT', $nfeIsProduction ? 'sefaz' : 'mock');
+if (!in_array($nfeTransport, ['mock', 'sefaz'], true)) {
+    throw new RuntimeException('NFE_TRANSPORT deve ser mock ou sefaz.');
+}
+if ($nfeIsProduction && $nfeTransport === 'mock') {
+    throw new RuntimeException('O simulador de NF-e nao pode ser usado em producao.');
+}
+
 return [
     'sale.maxItemsPerInvoice' => 100,
     'integration.maxAttempts' => 5,
@@ -53,5 +69,38 @@ return [
         'homologationOperation' => $environmentValue('GID_HOMOLOGATION_OPERATION', ''),
         'issuerName' => $environmentValue('GID_ISSUER_NAME', 'NFDETRANRS'),
         'issuerCnpj' => preg_replace('/\D+/', '', $environmentValue('GID_ISSUER_CNPJ', '05034500000168')),
+    ],
+    'nfe' => [
+        'environment' => $nfeEnvironment,
+        'environmentCode' => $nfeIsProduction ? 1 : 2,
+        'transport' => $nfeTransport,
+        'layoutVersion' => '4.00',
+        'schemaPackage' => $environmentValue('NFE_SCHEMA_PACKAGE', 'PL_010_V1.30'),
+        'model' => 55,
+        'series' => (int) $environmentValue('NFE_SERIES', '1'),
+        'certificatePath' => $environmentValue('NFE_CERT_PATH'),
+        'certificatePassword' => $environmentValue('NFE_CERT_PASSWORD'),
+        'authorizationUrl' => $nfeBaseUrl . '/NfeAutorizacao/NFeAutorizacao4.asmx',
+        'authorizationReturnUrl' => $nfeBaseUrl . '/NfeRetAutorizacao/NFeRetAutorizacao4.asmx',
+        'statusUrl' => $nfeBaseUrl . '/NFeStatusServico/NFeStatusServico4.asmx',
+        'protocolUrl' => $nfeBaseUrl . '/NfeConsulta/NFeConsulta4.asmx',
+        'eventUrl' => $nfeBaseUrl . '/recepcaoevento/recepcaoevento4.asmx',
+        'issuer' => [
+            'cnpj' => preg_replace('/\D+/', '', $environmentValue('COMPANY_CNPJ', '05034500000168')),
+            'legalName' => $environmentValue('COMPANY_LEGAL_NAME', 'OFICINA DA MOTO COMERCIO DE PECAS LTDA'),
+            'tradeName' => $environmentValue('COMPANY_TRADE_NAME', 'OFICINA DA MOTO'),
+            'stateRegistration' => preg_replace('/\D+/', '', $environmentValue('NFE_COMPANY_IE')),
+            'taxRegime' => (int) $environmentValue('NFE_COMPANY_CRT', '0'),
+            'stateCode' => 43,
+            'state' => 'RS',
+            'cityCode' => (int) $environmentValue('NFE_COMPANY_CITY_CODE', '4314902'),
+            'city' => $environmentValue('NFE_COMPANY_CITY', 'PORTO ALEGRE'),
+            'street' => $environmentValue('NFE_COMPANY_STREET', 'RUA DOUTOR JOAO INACIO'),
+            'number' => $environmentValue('NFE_COMPANY_NUMBER', '218'),
+            'complement' => $environmentValue('NFE_COMPANY_COMPLEMENT'),
+            'district' => $environmentValue('NFE_COMPANY_DISTRICT', 'NAVEGANTES'),
+            'postalCode' => preg_replace('/\D+/', '', $environmentValue('NFE_COMPANY_POSTAL_CODE', '90230180')),
+            'phone' => preg_replace('/\D+/', '', $environmentValue('NFE_COMPANY_PHONE')),
+        ],
     ],
 ];

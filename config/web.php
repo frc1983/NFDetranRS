@@ -6,6 +6,7 @@ if ($cookieValidationKey === '') {
     throw new RuntimeException('Variavel obrigatoria ausente: APP_COOKIE_VALIDATION_KEY');
 }
 $isProduction = getenv('APP_ENV') === 'production';
+$params = require __DIR__ . '/params.php';
 return [
     'id' => 'nfdetranrs',
     'name' => 'NF Detran RS',
@@ -27,10 +28,15 @@ return [
         'urlManager' => ['enablePrettyUrl' => true, 'showScriptName' => false],
         'gidClient' => [
             'class' => app\services\integration\GidSoapClient::class,
-            'configuration' => require __DIR__ . '/gid.php',
-            'company' => (require __DIR__ . '/params.php')['company'],
+            'configuration' => $params['gid'],
+            'company' => $params['company'],
         ],
-        'sefazClient' => ['class' => app\services\integration\StubSefazClient::class],
+        'sefazClient' => [
+            'class' => $params['nfe']['transport'] === 'mock'
+                ? app\services\integration\MockSefazClient::class
+                : app\services\integration\StubSefazClient::class,
+            'configuration' => $params['nfe'],
+        ],
     ],
-    'params' => require __DIR__ . '/params.php',
+    'params' => $params,
 ];
